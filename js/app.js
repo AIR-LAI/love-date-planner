@@ -92,10 +92,9 @@ async function saveDateConfig(dateId, config) {
 }
 
 // 提交女友选择
-async function submitResponse(dateId, response) {
-  const existing = await getDateConfig(dateId) || { config: {}, response: null };
-  existing.response = { ...response, submittedAt: new Date().toISOString() };
-  await githubPut(`data/${dateId}.json`, existing);
+async function submitResponse(dateId, response, config) {
+  const data = { config: config || {}, response: { ...response, submittedAt: new Date().toISOString() } };
+  await githubPut(`data/${dateId}.json`, data);
 }
 
 // 轮询监听变化

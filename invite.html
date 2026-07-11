@@ -179,8 +179,11 @@ window.addEventListener("load", function() {
           return;
         }
 
-        renderInvitation(data.config);
-        renderOptions(data.config);
+        // Only render options on first data load
+if (!window._optsRendered) {
+  renderOptions(data.config);
+  window._optsRendered = true;
+}
       });
     }
 
@@ -246,13 +249,12 @@ window.addEventListener("load", function() {
       const note = document.getElementById("herNote").value.trim();
 
       try {
-        await submitResponse(dateId, {
+        await submitResponse(dateId, { 
           selectedDate,
           selectedTime,
           selectedActivity,
           selectedFood,
-          note
-        });
+          note }, dateData && dateData.config);
 
         if (unlisten) unlisten();
         showThankYou({
