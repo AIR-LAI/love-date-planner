@@ -43,14 +43,18 @@ function fromBase64(base64) {
   return decoder.decode(bytes);
 }
 
-// 读取数据（通过 raw.githubusercontent.com，无需认证）
+// 读取数据（通过 GitHub API）
 async function getDateConfig(dateId) {
-  const url = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/data/${dateId}.json`;
+  const token = getToken();
+  if (!token) return null;
   try {
-    const res = await fetch(url);
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/data/${dateId}.json`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
     if (!res.ok) return null;
-    const text = await res.text();
-    return JSON.parse(text);
+    const json = await res.json();
+    const decoded = fromBase64(json.content);
+    return JSON.parse(decoded);
   } catch(e) { return null; }
 }
 
@@ -171,3 +175,4 @@ function formatDate(ts) {
   return d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日 " + 
     String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
 }
+
