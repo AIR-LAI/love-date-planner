@@ -136,8 +136,20 @@
   <div style="font-size:3rem;animation:heartBeat 1s ease-in-out infinite;">💕</div>
   <p style="margin-top:16px;font-family:PingFang SC, Microsoft YaHei, sans-serif;color:#8D6E63;">加载中…</p>
 </div>
-<script src="js/github-config.js"></script>
+
 <script src="js/app.js"></script>
+<script>
+// Token setup - prompt on first use
+(function() {
+  var token = getToken();
+  if (!token || token.length < 10) {
+    var input = prompt("请输入你的 GitHub Token（只需输入一次，会保存在本地）：");
+    if (input && input.length > 10) {
+      localStorage.setItem("githubToken", input);
+    }
+  }
+})();
+</script>
 <script>
 window.addEventListener("load", function() {
   setTimeout(function() {
@@ -242,7 +254,7 @@ window.addEventListener("load", function() {
         document.getElementById("resultCard").classList.remove("hidden");
 
         const baseUrl = window.location.origin + window.location.pathname.replace("setup.html", "");
-        document.getElementById("inviteLink").value = `${baseUrl}invite.html?id=${dateId}`;
+        document.getElementById("inviteLink").value = `${baseUrl}invite.html?id=${dateId}&t=${encodeURIComponent(getToken())}`;
         document.getElementById("setupLink").value = `${baseUrl}setup.html?id=${dateId}`;
 
         showToast("🎉 约会已创建！");
@@ -390,7 +402,7 @@ window.addEventListener("load", function() {
 
     function copyDateLink(dateId) {
       const baseUrl = window.location.origin + window.location.pathname.replace("setup.html", "invite.html");
-      copyText(`${baseUrl}?id=${dateId}`).then(() => showToast("✅ 邀请链接已复制！"));
+      copyText(`${baseUrl}?id=${dateId}&t=${encodeURIComponent(getToken())}`).then(() => showToast("✅ 邀请链接已复制！"));
     }
 
     // ======== Init ========
