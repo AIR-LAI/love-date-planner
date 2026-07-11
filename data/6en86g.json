@@ -22,5 +22,12 @@
     "herName": "亲爱的weining",
     "inviteMessage": "宝贝，我想你了"
   },
-  "response": null
+  "response": {
+    "selectedDate": "8.25",
+    "selectedTime": "上午",
+    "selectedActivity": "k歌",
+    "selectedFood": "火锅",
+    "note": "爱你",
+    "submittedAt": "2026-07-11T12:28:39.337Z"
+  }
 }
