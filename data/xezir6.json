@@ -18,5 +18,12 @@
     "herName": "亲爱的",
     "inviteMessage": "宝贝，我想和你一起度过美好的一天～"
   },
-  "response": null
+  "response": {
+    "selectedDate": "1",
+    "selectedTime": "上午",
+    "selectedActivity": "1",
+    "selectedFood": "1",
+    "note": "爱你",
+    "submittedAt": "2026-07-11T10:42:31.232Z"
+  }
 }
