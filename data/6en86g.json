@@ -1,0 +1,26 @@
+{
+  "config": {
+    "dates": [
+      "8.25",
+      "8.26"
+    ],
+    "times": [
+      "上午",
+      "下午",
+      "晚上"
+    ],
+    "activities": [
+      "电影",
+      "k歌"
+    ],
+    "foods": [
+      "火锅",
+      "漂亮饭",
+      "烤肉"
+    ],
+    "yourName": "Lester",
+    "herName": "亲爱的weining",
+    "inviteMessage": "宝贝，我想你了"
+  },
+  "response": null
+}
