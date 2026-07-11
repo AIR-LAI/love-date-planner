@@ -146,3 +146,28 @@ function showToast(message) {
   clearTimeout(toast._hideTimer);
   toast._hideTimer = setTimeout(() => toast.classList.remove("show"), 2000);
 }
+
+
+// Delete GitHub file
+async function githubDelete(path) {
+  const token = getToken();
+  if (!token) throw new Error("请先设置 Token");
+  const existing = await fetch(\https://api.github.com/repos/\/\/contents/\\, {
+    headers: { "Authorization": \Bearer \\ }
+  });
+  if (!existing.ok) return;
+  const data = await existing.json();
+  await fetch(\https://api.github.com/repos/\/\/contents/\\, {
+    method: "DELETE",
+    headers: { "Authorization": \Bearer \\, "Content-Type": "application/json" },
+    body: JSON.stringify({ message: \Delete \\, sha: data.sha, branch: "main" })
+  });
+}
+
+// Format timestamp
+function formatDate(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  return d.getFullYear() + "年" + (d.getMonth()+1) + "月" + d.getDate() + "日 " + 
+    String(d.getHours()).padStart(2,"0") + ":" + String(d.getMinutes()).padStart(2,"0");
+}

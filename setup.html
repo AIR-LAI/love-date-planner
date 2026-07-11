@@ -378,6 +378,7 @@ window.addEventListener("load", function() {
           <div class="date-item-info">
             <div class="name">${escapeHtml(d.title)}</div>
             <div class="status" id="status-${d.id}">⏳ 加载中…</div>
+            <div style="font-size:0.7rem;color:var(--brown-lighter);margin-top:4px;">${formatDate(d.createdAt)}</div>
           </div>
           <div class="date-item-actions">
             <button class="btn btn-sm btn-outline" onclick="window.location.href='setup.html?id=${d.id}'">✏️</button>
@@ -405,6 +406,20 @@ window.addEventListener("load", function() {
       copyText(`${baseUrl}?id=${dateId}&t=${encodeURIComponent(getToken())}`).then(() => showToast("✅ 邀请链接已复制！"));
     }
 
+    // ======== Delete Record ========
+    async function deleteDateRecord(dateId, title) {
+      if (!confirm("确定要删除「" + title + "」吗？此操作不可撤销！")) return;
+      try {
+        await githubDelete("data/" + dateId + ".json");
+        removeMyDate(dateId);
+        renderDatesList();
+        showToast("🗑️ 已删除");
+      } catch (err) {
+        removeMyDate(dateId);
+        renderDatesList();
+        showToast("🗑️ 已从列表移除");
+      }
+    }
     // ======== Init ========
     // Check URL params
     const urlParams = new URLSearchParams(window.location.search);
@@ -432,5 +447,6 @@ window.addEventListener("load", function() {
   </script>
 </body>
 </html>
+
 
 
