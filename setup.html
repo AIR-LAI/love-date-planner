@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>💕 设置约会</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="floating-hearts">
+    <span>🌸</span><span>✨</span><span>💖</span><span>🌷</span><span>💕</span>
+  </div>
+
+  <div class="page">
+    <div class="setup-header">
+      <h1>💕 约会策划</h1>
+      <p>精心策划每一次约会</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" data-tab="create">✨ 创建</button>
+      <button class="tab" data-tab="dates">📋 记录</button>
+    </div>
+
+    <!-- Tab: Create -->
+    <div class="tab-content active" id="tab-create">
+      <div class="card">
+        <div class="card-title">🎨 设置约会内容</div>
+
+        <!-- 你的名字 -->
+        <div class="setup-section">
+          <div class="field-label">👤 你的名字</div>
+          <input class="input-field" id="yourName" placeholder="例如：小明" value="你的男友">
+        </div>
+
+        <!-- 她的名字 -->
+        <div class="setup-section">
+          <div class="field-label">👩 她的名字</div>
+          <input class="input-field" id="herName" placeholder="例如：小红" value="亲爱的">
+        </div>
+
+        <!-- 邀请语 -->
+        <div class="setup-section">
+          <div class="field-label">💌 邀请语</div>
+          <textarea class="input-field" id="inviteMessage" placeholder="写一段浪漫的邀请语…" rows="3">宝贝，我想和你一起度过美好的一天～</textarea>
+        </div>
+
+        <!-- 日期选项 -->
+        <div class="setup-section">
+          <div class="field-label">📅 可选日期</div>
+          <div class="tag-list" id="datesList"></div>
+          <div class="add-item-row">
+            <input class="input-field" id="dateInput" placeholder="例如：7月15日(周三)" maxlength="20">
+            <button class="btn btn-sm btn-primary" onclick="addTag('dates')">+</button>
+          </div>
+        </div>
+
+        <!-- 时间段 -->
+        <div class="setup-section">
+          <div class="field-label">🕐 可选时间段</div>
+          <div class="tag-list" id="timesList"></div>
+          <div class="add-item-row">
+            <input class="input-field" id="timeInput" placeholder="例如：下午" maxlength="20">
+            <button class="btn btn-sm btn-primary" onclick="addTag('times')">+</button>
+          </div>
+        </div>
+
+        <!-- 约会项目 -->
+        <div class="setup-section">
+          <div class="field-label">🎯 约会项目</div>
+          <div class="tag-list" id="activitiesList"></div>
+          <div class="add-item-row">
+            <input class="input-field" id="activityInput" placeholder="例如：看电影" maxlength="20">
+            <button class="btn btn-sm btn-primary" onclick="addTag('activities')">+</button>
+          </div>
+        </div>
+
+        <!-- 吃的选项 -->
+        <div class="setup-section">
+          <div class="field-label">🍽️ 吃的选项</div>
+          <div class="tag-list" id="foodsList"></div>
+          <div class="add-item-row">
+            <input class="input-field" id="foodInput" placeholder="例如：火锅" maxlength="20">
+            <button class="btn btn-sm btn-primary" onclick="addTag('foods')">+</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-full mt-16" onclick="saveConfig()">
+          💫 生成邀请链接
+        </button>
+      </div>
+
+      <!-- 刚生成的链接 -->
+      <div id="resultCard" class="hidden">
+        <div class="card mt-16 animate-bounceIn">
+          <div class="card-title">🎉 约会已创建！</div>
+          <p style="margin-bottom:12px;font-size:0.9rem;color:var(--brown-light);">把下面的链接发给你的女朋友吧～</p>
+          <div class="flex gap-8" style="margin-bottom:12px;">
+            <input class="input-field" id="inviteLink" readonly style="font-size:0.85rem;padding:10px 12px;">
+            <button class="btn btn-sm btn-primary" onclick="copyInviteLink()">📋 复制</button>
+          </div>
+          <div class="flex gap-8" style="margin-bottom:8px;">
+            <input class="input-field" id="setupLink" readonly style="font-size:0.85rem;padding:10px 12px;">
+            <button class="btn btn-sm btn-secondary" onclick="copySetupLink()">📋 复制</button>
+          </div>
+          <p style="font-size:0.8rem;color:var(--brown-lighter);">上方：发给女友的邀请链接　｜　下方：你的设置/查看链接（请自己保存）</p>
+          <button class="btn btn-outline w-full mt-16" onclick="loadDate(document.getElementById('currentDateId').value)">
+            📊 查看女友选择
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: My Dates -->
+    <div class="tab-content" id="tab-dates">
+      <div class="card">
+        <div class="card-title">📋 我的约会记录</div>
+        <div id="datesContainer">
+          <div class="empty-state" id="noDates">
+            <div class="icon">📭</div>
+            <p>还没有创建过约会哦～</p>
+            <button class="btn btn-sm btn-primary mt-16" onclick="switchTab('create')">✨ 创建第一个约会</button>
+          </div>
+          <div class="saved-dates-list hidden" id="datesListContainer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden: current editing date ID -->
+  <input type="hidden" id="currentDateId">
+
+  <!-- Firebase -->
+  <div id="loadingOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#FFF8F0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.5s;">
+  <div style="font-size:3rem;animation:heartBeat 1s ease-in-out infinite;">💕</div>
+  <p style="margin-top:16px;font-family:ZCOOL KuaiLe, PingFang SC, Microsoft YaHei, sans-serif;color:#8D6E63;">加载中…</p>
+</div>
+<script><script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script></script>
+<script>
+window.addEventListener("load", function() {
+  setTimeout(function() {
+    var el = document.getElementById("loadingOverlay");
+    if (el) { el.style.opacity = "0"; setTimeout(function() { el.remove(); }, 500); }
+  }, 300);
+});
+</script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    // ======== Tag Management ========
+    const tagLists = { dates: [], times: [], activities: [], foods: [] };
+    const inputIds = { dates: "dateInput", times: "timeInput", activities: "activityInput", foods: "foodInput" };
+    const listIds = { dates: "datesList", times: "timesList", activities: "activitiesList", foods: "foodsList" };
+
+    // 预填默认值
+    tagLists.times = ["上午", "下午", "晚上"];
+
+    function renderTags(type) {
+      const container = document.getElementById(listIds[type]);
+      container.innerHTML = tagLists[type].map((tag, i) =>
+        `<span class="tag">${escapeHtml(tag)} <span class="tag-remove" onclick="removeTag('${type}', ${i})">✕</span></span>`
+      ).join("");
+    }
+
+    function addTag(type) {
+      const input = document.getElementById(inputIds[type]);
+      const val = input.value.trim();
+      if (val && !tagLists[type].includes(val)) {
+        tagLists[type].push(val);
+        renderTags(type);
+        input.value = "";
+      }
+      input.focus();
+    }
+
+    function removeTag(type, index) {
+      tagLists[type].splice(index, 1);
+      renderTags(type);
+    }
+
+    // Enter key to add tag
+    Object.keys(inputIds).forEach(type => {
+      document.getElementById(inputIds[type]).addEventListener("keypress", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); addTag(type); }
+      });
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // 初始化渲染
+    renderTags("times");
+
+    // ======== Tab Switching ========
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+      document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add("active");
+      document.getElementById(`tab-${tabName}`).classList.add("active");
+      if (tabName === "dates") renderDatesList();
+    }
+
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+    });
+
+    // ======== Save Config ========
+    async function saveConfig() {
+      const yourName = document.getElementById("yourName").value.trim() || "你的男友";
+      const herName = document.getElementById("herName").value.trim() || "亲爱的";
+      const inviteMessage = document.getElementById("inviteMessage").value.trim() || "我们约会吧～";
+
+      if (tagLists.dates.length === 0) { alert("请至少添加一个日期选项 💕"); return; }
+      if (tagLists.activities.length === 0) { alert("请至少添加一个约会项目 💕"); return; }
+      if (tagLists.times.length === 0) { alert("请至少添加一个时间段 💕"); return; }
+      if (tagLists.foods.length === 0) { alert("请至少添加一个吃的选项 💕"); return; }
+
+      const config = {
+        dates: tagLists.dates,
+        times: tagLists.times,
+        activities: tagLists.activities,
+        foods: tagLists.foods,
+        yourName: yourName,
+        herName: herName,
+        inviteMessage: inviteMessage
+      };
+
+      // Check if editing existing
+      let dateId = document.getElementById("currentDateId").value;
+      if (!dateId) {
+        dateId = generateId();
+        document.getElementById("currentDateId").value = dateId;
+      }
+
+      try {
+        await saveDateConfig(dateId, config);
+        addMyDate(dateId, `${config.dates[0] || "约会"} - ${config.activities[0] || ""}`);
+        document.getElementById("resultCard").classList.remove("hidden");
+
+        const baseUrl = window.location.origin + window.location.pathname.replace("setup.html", "");
+        document.getElementById("inviteLink").value = `${baseUrl}invite.html?id=${dateId}`;
+        document.getElementById("setupLink").value = `${baseUrl}setup.html?id=${dateId}`;
+
+        showToast("🎉 约会已创建！");
+      } catch (err) {
+        alert("保存失败，请检查 Firebase 配置是否正确：" + err.message);
+      }
+    }
+
+    function copyInviteLink() {
+      const link = document.getElementById("inviteLink");
+      copyText(link.value).then(() => showToast("✅ 邀请链接已复制！")).catch(() => showToast("复制失败"));
+    }
+
+    function copySetupLink() {
+      const link = document.getElementById("setupLink");
+      copyText(link.value).then(() => showToast("✅ 设置链接已复制！请自己保存好")).catch(() => showToast("复制失败"));
+    }
+
+    // ======== Load Existing Date ========
+    async function loadDate(dateId) {
+      if (!dateId) { alert("请输入约会ID"); return; }
+      try {
+        const data = await getDateConfig(dateId);
+        if (!data) { alert("未找到该约会 😢"); return; }
+        populateForm(data);
+      } catch (err) {
+        alert("加载失败：" + err.message);
+      }
+    }
+
+    function populateForm(data) {
+      const cfg = data.config;
+      document.getElementById("yourName").value = cfg.yourName || "你的男友";
+      document.getElementById("herName").value = cfg.herName || "亲爱的";
+      document.getElementById("inviteMessage").value = cfg.inviteMessage || "我们约会吧～";
+
+      tagLists.dates = cfg.dates || [];
+      tagLists.times = cfg.times || ["上午", "下午", "晚上"];
+      tagLists.activities = cfg.activities || [];
+      tagLists.foods = cfg.foods || [];
+
+      Object.keys(tagLists).forEach(type => renderTags(type));
+
+      // Show results if available
+      if (data.response) {
+        showResults(data.response, cfg);
+      }
+    }
+
+    // ======== Results View ========
+    function showResults(response, config) {
+      // Switch to a results view
+      document.getElementById("resultCard").classList.remove("hidden");
+      const resultsHtml = `
+        <div class="card mt-16 results-section">
+          <div class="card-title">💕 ${config.herName} 的选择</div>
+          <div class="result-item">
+            <div class="result-icon">📅</div>
+            <div class="result-content">
+              <div class="result-label">日期</div>
+              <div class="result-value">${escapeHtml(response.selectedDate || "未选")}</div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon">🕐</div>
+            <div class="result-content">
+              <div class="result-label">时间段</div>
+              <div class="result-value">${escapeHtml(response.selectedTime || "未选")}</div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon">🎯</div>
+            <div class="result-content">
+              <div class="result-label">约会项目</div>
+              <div class="result-value">${escapeHtml(response.selectedActivity || "未选")}</div>
+            </div>
+          </div>
+          <div class="result-item">
+            <div class="result-icon">🍽️</div>
+            <div class="result-content">
+              <div class="result-label">吃的</div>
+              <div class="result-value">${escapeHtml(response.selectedFood || "未选")}</div>
+            </div>
+          </div>
+          ${response.note ? `
+          <div class="result-item">
+            <div class="result-icon">💌</div>
+            <div class="result-content">
+              <div class="result-label">她的补充</div>
+              <div class="result-value">${escapeHtml(response.note)}</div>
+            </div>
+          </div>` : ""}
+          <p style="text-align:center;font-size:0.85rem;color:var(--brown-lighter);margin-top:16px;">
+            💕 准备一场完美的约会吧！
+          </p>
+        </div>
+      `;
+      // Insert after resultCard
+      const existing = document.querySelector(".results-section");
+      if (existing) existing.remove();
+      document.getElementById("resultCard").insertAdjacentHTML("afterend", resultsHtml);
+    }
+
+    // ======== Render Dates List ========
+    function renderDatesList() {
+      const dates = getMyDates();
+      const container = document.getElementById("datesListContainer");
+      const emptyState = document.getElementById("noDates");
+
+      if (dates.length === 0) {
+        container.classList.add("hidden");
+        emptyState.classList.remove("hidden");
+        return;
+      }
+
+      emptyState.classList.add("hidden");
+      container.classList.remove("hidden");
+
+      container.innerHTML = dates.map(d => `
+        <div class="date-item">
+          <div class="date-item-info">
+            <div class="name">${escapeHtml(d.title)}</div>
+            <div class="status" id="status-${d.id}">⏳ 加载中…</div>
+          </div>
+          <div class="date-item-actions">
+            <button class="btn btn-sm btn-outline" onclick="window.location.href='setup.html?id=${d.id}'">✏️</button>
+            <button class="btn btn-sm btn-secondary" onclick="copyDateLink('${d.id}')">🔗</button>
+          </div>
+        </div>
+      `).join("");
+
+      // Listen for status updates on each date
+      dates.forEach(d => listenDateConfig(d.id, (data) => {
+        const statusEl = document.getElementById(`status-${d.id}`);
+        if (!statusEl) return;
+        if (data && data.response) {
+          statusEl.textContent = `✅ ${data.config.herName || "她"} 已选择！`;
+          statusEl.style.color = "var(--pink)";
+        } else {
+          statusEl.textContent = "⏳ 等待回应中…";
+          statusEl.style.color = "var(--brown-lighter)";
+        }
+      }));
+    }
+
+    function copyDateLink(dateId) {
+      const baseUrl = window.location.origin + window.location.pathname.replace("setup.html", "invite.html");
+      copyText(`${baseUrl}?id=${dateId}`).then(() => showToast("✅ 邀请链接已复制！"));
+    }
+
+    // ======== Init ========
+    // Check URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const dateId = urlParams.get("id");
+    const view = urlParams.get("view");
+
+    if (dateId) {
+      document.getElementById("currentDateId").value = dateId;
+      loadDate(dateId);
+      // Show resultCard with links after loading
+      setTimeout(function() {
+        var rc = document.getElementById("resultCard");
+        if (rc) {
+          rc.classList.remove("hidden");
+          var bu = window.location.origin + window.location.pathname.replace("setup.html", "");
+          document.getElementById("inviteLink").value = bu + "invite.html?id=" + dateId;
+          document.getElementById("setupLink").value = bu + "setup.html?id=" + dateId;
+        }
+      }, 500);
+    }
+
+    if (view === "dates") {
+      switchTab("dates");
+    }
+  </script>
+</body>
+</html>
+
