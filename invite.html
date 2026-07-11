@@ -111,7 +111,8 @@
   <div style="font-size:3rem;animation:heartBeat 1s ease-in-out infinite;">💕</div>
   <p style="margin-top:16px;font-family:PingFang SC, Microsoft YaHei, sans-serif;color:#8D6E63;">加载中…</p>
 </div>
-<script src="lib/firebase-app-compat.js"></script>
+<script src="js/github-config.js"></script>
+<script src="js/app.js"></script>
 <script>
 window.addEventListener("load", function() {
   setTimeout(function() {
@@ -120,9 +121,6 @@ window.addEventListener("load", function() {
   }, 300);
 });
 </script>
-  <script src="lib/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/app.js"></script>
 
   <script>
     let dateData = null;
@@ -156,7 +154,7 @@ window.addEventListener("load", function() {
       }
 
       // Listen for real-time updates
-      unlisten = listenDateConfig(dateId, (data) => {
+      unlisten = pollDateConfig(dateId, (data) => {
         if (!data) {
           document.getElementById("inviteMessage").textContent = "这个约会好像不见了 😢";
           return;
@@ -394,3 +392,4 @@ window.addEventListener("load", function() {
   </script>
 </body>
 </html>
+
