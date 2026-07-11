@@ -2,7 +2,8 @@
   "config": {
     "dates": [
       "8.25",
-      "8.26"
+      "8.26",
+      "8.24"
     ],
     "times": [
       "上午",
@@ -11,23 +12,18 @@
     ],
     "activities": [
       "电影",
-      "k歌"
+      "k歌",
+      "你带我玩"
     ],
     "foods": [
       "火锅",
       "漂亮饭",
-      "烤肉"
+      "烤肉",
+      "涮羊肉"
     ],
     "yourName": "Lester",
     "herName": "亲爱的weining",
     "inviteMessage": "宝贝，我想你了"
   },
-  "response": {
-    "selectedDate": "8.25",
-    "selectedTime": "上午",
-    "selectedActivity": "k歌",
-    "selectedFood": "火锅",
-    "note": "爱你",
-    "submittedAt": "2026-07-11T12:28:39.337Z"
-  }
+  "response": null
 }
