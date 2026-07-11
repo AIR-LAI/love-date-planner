@@ -1,0 +1,26 @@
+{
+  "config": {
+    "dates": [
+      "1",
+      "2"
+    ],
+    "times": [
+      "上午",
+      "下午",
+      "晚上",
+      "1"
+    ],
+    "activities": [
+      "2",
+      "21"
+    ],
+    "foods": [
+      "3",
+      "33"
+    ],
+    "yourName": "Lester",
+    "herName": "亲爱的weining",
+    "inviteMessage": "宝贝，我想和你一起度过美好的一天～"
+  },
+  "response": null
+}
